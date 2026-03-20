@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAFW - High-efficiency AI Framework Workspace</title>
+    <meta name="description" content="HAFW 是一个 AI 智能开发设计的综合管理与协作平台，提供从需求分析到部署运维的完整开发流程支持。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #0f172a;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .nav-logo {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--primary); }
+        .nav-docs-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+        .nav-docs-btn:hover {
+            background: var(--bg);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-cta:hover { background: var(--primary-dark); }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 100%);
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        .hero-badge-dot {
+            width: 6px; height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.375rem);
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-muted);
+        }
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 64px;
+        }
+        .stat { text-align: center; }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: var(--secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-top: 48px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .code-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+        }
+        .code-dot-red { background: #ff5f56; }
+        .code-dot-yellow { background: #ffbd2e; }
+        .code-dot-green { background: #27c93f; }
+        .code-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .code-content .comment { color: #64748b; }
+        .code-content .command { color: #60a5fa; }
+
+        /* Features Section */
+        .features {
+            padding: 120px 24px;
+            background: var(--bg);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+        .section-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .feature-card {
+            padding: 32px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+        .feature-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Workflow Section */
+        .workflow {
+            padding: 120px 24px;
+            background: var(--bg-secondary);
+        }
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .workflow-step {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s;
+        }
+        .workflow-step:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+        }
+        .step-number {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        .step-content { flex: 1; }
+        .step-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .step-desc {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+        }
+        .step-commands {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+        }
+        .step-commands code { color: var(--primary); }
+
+        /* Commands Section */
+        .commands {
+            padding: 120px 24px;
+            background: var(--bg);
+        }
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .command-item {
+            padding: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: all 0.2s;
+        }
+        .command-item:hover { border-color: var(--primary-light); }
+        .command-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .command-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 120px 24px;
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 100%);
+            text-align: center;
+        }
+        .cta-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+        }
+        .cta-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 48px 24px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        .footer-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+        .footer-link:hover { color: var(--primary); }
+        .footer-copy {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 60px 20px;
+            overflow-y: auto;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-container {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 1400px;
+            max-height: calc(100vh - 120px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius);
+            transition: background 0.2s;
+        }
+        .modal-close:hover {
+            background: var(--bg-tertiary);
+        }
+        .modal-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            min-height: 600px;
+        }
+        .docs-sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 24px 0;
+        }
+        .docs-section {
+            margin-bottom: 24px;
+        }
+        .docs-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .docs-section-title:hover {
+            color: var(--primary);
+        }
+        .docs-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .docs-nav-item {
+            padding: 10px 24px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+        .docs-nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text);
+        }
+        .docs-nav-item.active {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        .docs-nav-item-sub {
+            padding-left: 48px;
+            font-size: 0.8125rem;
+        }
+        .docs-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 48px;
+        }
+        .docs-content h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        .docs-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 32px 0 16px;
+            color: var(--text);
+        }
+        .docs-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 24px 0 12px;
+            color: var(--text);
+        }
+        .docs-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin: 16px 0;
+        }
+        .docs-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--primary);
+        }
+        .docs-content pre {
+            background: #f1f5f9;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            color: #334155;
+        }
+        .docs-content pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+        .docs-content ul, .docs-content ol {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: var(--text-secondary);
+        }
+        .docs-content li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        .docs-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .docs-content th, .docs-content td {
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+        .docs-content th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+        }
+
+        /* Mobile */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero-stats { flex-direction: column; gap: 24px; }
+            .workflow-step { flex-direction: column; text-align: center; }
+            .footer-content { flex-direction: column; text-align: center; }
+            .modal-body { flex-direction: column; }
+            .docs-sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+            .docs-content { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="#" class="nav-brand">
+            <div class="nav-logo">H</div>
+            HAFW
+        </a>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">功能特性</a>
+            <a href="#workflow" class="nav-link">工作流程</a>
+            <a href="#commands" class="nav-link">指令列表</a>
+            <a href="https://github.com/ohalo/hafw-platform" class="nav-link">GitHub</a>
+            <button class="nav-docs-btn" onclick="openDocsModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                文档
+            </button>
+            <a href="#get-started" class="nav-cta">开始使用</a>
+        </div>
+        <button class="mobile-menu-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            v1.0.2 现已发布
+        </div>
+        <h1 class="hero-title">
+            高效 AI 开发<br><span>框架工作空间</span>
+        </h1>
+        <p class="hero-subtitle">
+            HAFW 是一个 AI 智能开发设计的综合管理与协作平台，提供从需求分析到部署运维的完整开发流程支持。
+        </p>
+        <div class="hero-cta-group">
+            <a href="#get-started" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                </svg>
+                快速开始
+            </a>
+            <a href="https://github.com/ohalo/hafw-platform" class="btn btn-secondary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                GitHub
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-value">27</div>
+                <div class="stat-label">智能指令</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">6</div>
+                <div class="stat-label">执行阶段</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">AI 驱动</div>
+            </div>
+        </div>
+        <div class="code-block">
+            <div class="code-header">
+                <span class="code-dot code-dot-red"></span>
+                <span class="code-dot code-dot-yellow"></span>
+                <span class="code-dot code-dot-green"></span>
+            </div>
+            <div class="code-content">
+                <span class="comment"># 安装 HAFW CLI</span><br>
+                $ <span class="command">npm install -g hafw-cli</span><br><br>
+                <span class="comment"># 初始化项目</span><br>
+                $ <span class="command">hafw init</span> my-project<br><br>
+                <span class="comment"># 开始需求分析</span><br>
+                $ <span class="command">hafw req-analysis</span> <span class="arg">"实现用户积分系统"</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">核心功能</span>
+                <h2 class="section-title">全链路 AI 开发支持</h2>
+                <p class="section-subtitle">从需求到部署，每个环节都有 AI 智能辅助，让开发更高效、更规范</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3 class="feature-title">智能需求分析</h3>
+                    <p class="feature-desc">自动解析用户需求，生成结构化 PRD 文档，提取关键业务实体和流程</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3 class="feature-title">架构设计</h3>
+                    <p class="feature-desc">基于需求自动生成系统架构、数据库设计和 API 接口规范</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💻</div>
+                    <h3 class="feature-title">代码生成</h3>
+                    <p class="feature-desc">根据架构设计自动生成高质量代码，支持多种编程语言和框架</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3 class="feature-title">自动化测试</h3>
+                    <p class="feature-desc">智能生成测试用例，执行自动化测试，确保代码质量</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">代码审查</h3>
+                    <p class="feature-desc">AI 自动审查代码，发现潜在问题，提供优化建议</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">部署运维</h3>
+                    <p class="feature-desc">自动化 CI/CD 流程，一键构建、发布和监控</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section -->
+    <section class="workflow" id="workflow">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">工作流程</span>
+                <h2 class="section-title">6 阶段标准化流程</h2>
+                <p class="section-subtitle">遵循软件工程方法论，每个阶段都有明确的输入输出和检查点</p>
+            </div>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">0</div>
+                    <div class="step-content">
+                        <h3 class="step-title">项目初始化</h3>
+                        <p class="step-desc">创建 HAFW 工作空间，初始化项目上下文和目录结构</p>
+                        <div class="step-commands">
+                            <code>/hafw-context-init</code> {项目名称}
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">需求分析</h3>
+                        <p class="step-desc">分析需求、生成 PRD、评审并拆解为可执行任务</p>
+                        <div class="step-commands">
+                            <code>/hafw-req-analysis</code> → <code>/hafw-req-spec</code> → <code>/hafw-req-breakdown</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">系统设计</h3>
+                        <p class="step-desc">架构设计、数据库设计、API 设计并行进行</p>
+                        <div class="step-commands">
+                            <code>/hafw-design-arch</code> → <code>/hafw-design-db</code> + <code>/hafw-design-api</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">代码开发</h3>
+                        <p class="step-desc">生成代码、生成测试、代码审查循环迭代</p>
+                        <div class="step-commands">
+                            <code>/hafw-dev-code</code> → <code>/hafw-dev-test</code> → <code>/hafw-dev-review</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3 class="step-title">质量保障</h3>
+                        <p class="step-desc">代码扫描、自动化测试、生成质量报告</p>
+                        <div class="step-commands">
+                            <code>/hafw-qa-scan</code> → <code>/hafw-qa-test</code> → <code>/hafw-qa-report</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="workflow-step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3 class="step-title">部署运维</h3>
+                        <p class="step-desc">构建打包、发布部署、配置监控告警</p>
+                        <div class="step-commands">
+                            <code>/hafw-deploy-build</code> → <code>/hafw-deploy-release</code> → <code>/hafw-deploy-monitor</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commands Section -->
+    <section class="commands" id="commands">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">指令列表</span>
+                <h2 class="section-title">27 个智能指令</h2>
+                <p class="section-subtitle">覆盖完整开发流程的强大指令集</p>
+            </div>
+            <div class="commands-grid">
+                <div class="command-item">
+                    <div class="command-name">/hafw-context-init</div>
+                    <div class="command-desc">初始化项目上下文</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-context-show</div>
+                    <div class="command-desc">查看当前上下文状态</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-req-analysis</div>
+                    <div class="command-desc">分析用户需求</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-req-spec</div>
+                    <div class="command-desc">生成需求规范文档</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-req-breakdown</div>
+                    <div class="command-desc">拆解需求生成任务</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-design-arch</div>
+                    <div class="command-desc">系统架构设计</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-design-db</div>
+                    <div class="command-desc">数据库设计</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-design-api</div>
+                    <div class="command-desc">API 接口设计</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-dev-code</div>
+                    <div class="command-desc">生成代码</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-dev-test</div>
+                    <div class="command-desc">生成测试代码</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-dev-review</div>
+                    <div class="command-desc">代码审查</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-qa-scan</div>
+                    <div class="command-desc">代码质量扫描</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-qa-test</div>
+                    <div class="command-desc">执行自动化测试</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-qa-report</div>
+                    <div class="command-desc">生成质量报告</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-deploy-build</div>
+                    <div class="command-desc">构建打包</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-deploy-release</div>
+                    <div class="command-desc">发布部署</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-deploy-monitor</div>
+                    <div class="command-desc">监控运维</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-task-list</div>
+                    <div class="command-desc">查看任务列表</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-task-update</div>
+                    <div class="command-desc">更新任务状态</div>
+                </div>
+                <div class="command-item">
+                    <div class="command-name">/hafw-context-scan</div>
+                    <div class="command-desc">扫描代码更新上下文</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="get-started">
+        <h2 class="cta-title">开始使用 HAFW</h2>
+        <p class="cta-subtitle">只需几分钟，即可体验 AI 驱动的全链路开发流程</p>
+        <div class="hero-cta-group">
+            <a href="https://github.com/ohalo/hafw-platform" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                查看文档
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="nav-logo">H</div>
+                HAFW Platform
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link" onclick="openDocsModal(); return false;">文档</a>
+                <a href="https://github.com/ohalo/hafw-platform" class="footer-link">GitHub</a>
+                <a href="https://github.com/ohalo/hafw-platform/issues" class="footer-link">问题反馈</a>
+            </div>
+            <div class="footer-copy">© 2026 HAFW Platform. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- Docs Modal -->
+    <div class="modal-overlay" id="docsModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    HAFW 文档中心
+                </div>
+                <button class="modal-close" onclick="closeDocsModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="docs-sidebar">
+                    <div class="docs-section">
+                        <div class="docs-section-title">📖 快速入门</div>
+                        <ul class="docs-nav-list">
+                            <li class="docs-nav-item active" onclick="loadDoc('intro')">简介</li>
+                            <li class="docs-nav-item" onclick="loadDoc('install')">安装指南</li>
+                            <li class="docs-nav-item" onclick="loadDoc('workflow')">使用流程</li>
+                        </ul>
+                    </div>
+                    <div class="docs-section">
+                        <div class="docs-section-title"> 核心概念</div>
+                        <ul class="docs-nav-list">
+                            <li class="docs-nav-item" onclick="loadDoc('context')">上下文注入</li>
+                            <li class="docs-nav-item" onclick="loadDoc('actions')">智能体 Actions</li>
+                        </ul>
+                    </div>
+                    <div class="docs-section">
+                        <div class="docs-section-title">🛠️ 平台功能</div>
+                        <ul class="docs-nav-list">
+                            <li class="docs-nav-item" onclick="loadDoc('requirements')">需求分析</li>
+                            <li class="docs-nav-item" onclick="loadDoc('design')">系统设计</li>
+                            <li class="docs-nav-item" onclick="loadDoc('development')">代码开发</li>
+                            <li class="docs-nav-item" onclick="loadDoc('quality')">质量保障</li>
+                            <li class="docs-nav-item" onclick="loadDoc('deployment')">部署运维</li>
+                        </ul>
+                    </div>
+                    <div class="docs-section">
+                        <div class="docs-section-title">📚 资源库</div>
+                        <ul class="docs-nav-list">
+                            <li class="docs-nav-item" onclick="loadDoc('commands')">命令参考</li>
+                            <li class="docs-nav-item" onclick="loadDoc('context-files')">上下文文件</li>
+                            <li class="docs-nav-item" onclick="loadDoc('specs')">规范文档</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="docs-content" id="docsContent">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDocsModal() {
+            document.getElementById('docsModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            loadDoc('intro');
+        }
+
+        function closeDocsModal() {
+            document.getElementById('docsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('docsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocsModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDocsModal();
+        });
+
+        const docsContent = {
+            intro: '<h1>HAFW 简介</h1><p>HAFW（High-efficiency AI Framework Workspace）是一个 AI 智能开发设计的综合管理与协作平台，提供从需求分析到部署运维的完整开发流程支持。</p><h2>核心理念</h2><p>HAFW 遵循软件工程方法论，结合 AI 辅助开发，将系统开发的基本逻辑从“为人类设计流程和工具”转向“为 AI 设计流程和工具”。</p><h2>为什么需要 HAFW？</h2><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:20px 0;"><div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius);"><h3>📊 传统开发的痛点</h3><ul><li>需求理解不一致</li><li>文档更新不及时</li><li>代码质量不稳定</li><li>沟通成本高</li><li>重复劳动多</li></ul></div><div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius);"><h3>🤖 AI 协作的优势</h3><ul><li>需求自动分析</li><li>文档自动生成</li><li>代码自动生成</li><li>24 小时在线</li><li>标准化输出</li></ul></div></div><h2>主要特点</h2><ul><li><strong>AI 驱动：</strong>27 个智能指令覆盖完整开发流程</li><li><strong>标准化流程：</strong>6 阶段标准化工作流，每个阶段都有明确输入输出</li><li><strong>上下文管理：</strong>多维度上下文注入，让 AI 理解你的项目</li><li><strong>智能体协作：</strong>基于 Action 模式的 AI 智能体驱动</li><li><strong>质量保障：</strong>多层次质量检查，确保交付质量</li></ul><h2>软件工程方法论</h2><p>HAFW 基于软件工程方法论，结合 AI 辅助开发，核心思想：</p><ul><li><strong>AI 优先：</strong>让 AI 承担重复性工作，人类专注于决策</li><li><strong>系统化：</strong>将开发过程系统化、标准化</li><li><strong>文档即代码：</strong>文档和代码同等重要，都需要版本管理</li><li><strong>持续改进：</strong>每个阶段都有质量检查，不合格就返工</li></ul>',
+            install: '<h1>安装指南</h1><h2>系统要求</h2><ul><li>Node.js >= 14.0.0</li><li>npm 或 yarn 包管理器</li><li>支持平台：macOS, Linux, Windows (WSL)</li></ul><h2>安装步骤</h2><h3>1. 安装 HAFW CLI</h3><pre><code>npm install -g hafw-cli</code></pre><h3>2. 验证安装</h3><pre><code>hafw --version</code></pre><p>预期输出：1.1.2</p><h3>3. 初始化项目</h3><pre><code>cd your-project-folder\nhafw init your-project-name</code></pre><h3>4. 验证初始化</h3><pre><code>hafw context-show</code></pre><h2>常见问题</h2><h3>Q1: npm 安装权限不足</h3><pre><code>sudo npm install -g hafw-cli</code></pre><h3>Q2: 项目已存在</h3><pre><code>hafw init your-project-name --force</code></pre>',
+            workflow: '<h1>使用流程</h1><h2>为什么设计这样的流程？</h2><p>HAFW 的 6 阶段流程基于软件工程方法论，每个阶段都有明确的目标和产出物：</p><ul><li><strong>阶段化：</strong>将复杂工程分解为可管理的阶段</li><li><strong>质量门控：</strong>每个阶段都有检查点，不合格不能进入下一阶段</li><li><strong>文档驱动：</strong>每个阶段都生成标准化文档</li><li><strong>AI 协作：</strong>每个阶段都有 AI 辅助，提高效率</li></ul><h2>完整流程图</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><pre style="margin:0;font-size:0.8rem;background:#f1f5f9;padding:20px;color:#334155;">阶段 0: 初始化 → 阶段 1: 需求分析 → 阶段 2: 系统设计 → 阶段 3: 代码开发 → 阶段 4: 质量保障 → 阶段 5: 部署运维\n    ↓                ↓                  ↓                  ↓                  ↓                  ↓\n创建上下文      需求分析          架构设计          生成代码          代码扫描          构建打包\n              需求规范          数据库设计        生成测试          自动化测试        发布部署\n              需求评审          API 设计          代码审查          质量报告          监控运维\n              任务拆解          设计评审          开发评审          质量评审          运维监控\n                  ↓                ↓                  ↓                  ↓                  ↓\n              评审通过？        评审通过？        审查通过？        质量达标？        部署成功？\n                  ↓                ↓                  ↓                  ↓                  ↓\n              否→重新分析      否→重新设计      否→重新开发      否→重新开发      否→重新构建</pre></div><h2>阶段详细说明</h2><h3>阶段 0: 项目初始化</h3><p><strong>目标：</strong>创建 HAFW 工作空间，初始化项目上下文</p><p><strong>为什么需要？</strong>为 AI 提供项目的基本信息和目录结构，让 AI 知道“我在哪个项目中工作”</p><pre><code>/hafw-context-init {项目名称}</code></pre><p><strong>产出物：</strong></p><ul><li><code>.hafw/{项目名称}/</code> - 项目工作空间</li><li><code>project.json</code> - 项目配置文件</li><li><code>contexts/</code> - 多维度上下文文件</li></ul><h3>阶段 1: 需求分析</h3><p><strong>目标：</strong>将模糊的用户需求转化为清晰的 PRD 文档</p><p><strong>为什么需要？</strong>70% 的项目失败源于需求不明确，这一步确保“做正确的事”</p><pre><code>/hafw-req-analysis "需求描述"\n/hafw-req-spec\n/hafw-req-review\n/hafw-req-breakdown</code></pre><p><strong>产出物：</strong></p><ul><li>需求分析文档</li><li>PRD 规范文档</li><li>需求评审报告</li><li>任务清单</li></ul><h3>阶段 2: 系统设计</h3><p><strong>目标：</strong>设计系统架构、数据库和 API</p><p><strong>为什么需要？</strong>好的设计能降低复杂度、提高可维护性，“先设计后编码”</p><pre><code>/hafw-design-arch\n/hafw-design-db\n/hafw-design-api</code></pre><p><strong>产出物：</strong></p><ul><li>架构设计文档</li><li>数据库设计文档</li><li>API 接口文档</li></ul><h3>阶段 3: 代码开发</h3><p><strong>目标：</strong>根据设计生成高质量代码</p><p><strong>为什么需要？</strong>AI 生成代码可以大幅提高效率，让人类专注于审查而非编写</p><pre><code>/hafw-dev-code\n/hafw-dev-test\n/hafw-dev-review</code></pre><p><strong>产出物：</strong></p><ul><li>源代码</li><li>测试代码</li><li>代码审查报告</li></ul><h3>阶段 4: 质量保障</h3><p><strong>目标：</strong>通过多层次质量检查确保代码质量</p><p><strong>为什么需要？</strong>质量是设计出来的，也是测试出来的，多层次保障更可靠</p><pre><code>/hafw-qa-scan\n/hafw-qa-test\n/hafw-qa-report</code></pre><p><strong>产出物：</strong></p><ul><li>代码扫描报告</li><li>测试结果</li><li>质量评估报告</li></ul><h3>阶段 5: 部署运维</h3><p><strong>目标：</strong>自动化构建、部署和监控</p><p><strong>为什么需要？</strong>自动化部署减少人为错误，监控先行确保快速发现问题</p><pre><code>/hafw-deploy-build\n/hafw-deploy-release\n/hafw-deploy-monitor</code></pre><p><strong>产出物：</strong></p><ul><li>构建产物</li><li>运行环境</li><li>监控配置</li></ul>',
+            context: '<h1>上下文注入</h1><p>上下文注入是 HAFW 的核心概念，通过多维度上下文让 AI 理解你的项目。</p><h2>为什么需要上下文？</h2><p>在传统软件开发中，人类开发者通过阅读文档、代码和沟通来理解项目。AI 智能体同样需要这种能力。上下文注入就是为 AI 提供理解项目所需的所有背景信息。</p><h2>多维度上下文体系</h2><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:20px 0;"><div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius);"><h3>📋 项目配置上下文</h3><ul><li><code>project.json</code> - 项目基本信息</li><li><code>project-structure.md</code> - 目录结构说明</li></ul></div><div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius);"><h3>🏗️ 技术上下文</h3><ul><li><code>architecture.md</code> - 系统架构</li><li><code>api.md</code> - API 接口规范</li><li><code>data-models.md</code> - 数据模型</li></ul></div><div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius);"><h3>⚙️ 开发上下文</h3><ul><li><code>development.md</code> - 开发环境配置</li><li><code>coding-style.md</code> - 编码规范</li></ul></div><div style="background:var(--bg-secondary);padding:16px;border-radius:var(--radius);"><h3>🔄 执行上下文</h3><ul><li><code>requirements/</code> - 需求文档</li><li><code>design/</code> - 设计文档</li><li><code>quality/</code> - 质量文档</li></ul></div></div>',
+            actions: '<h1>智能体 Actions</h1><h2>什么是 Actions？</h2><p>Actions 是 AI 智能体执行的具体任务指令，每个 Action 都是一个 Markdown 文件，告诉 AI 如何执行特定任务。</p><h2>设计原理</h2><p>基于软件工程方法论，HAFW 将软件开发分解为 27 个标准动作，每个动作都有：</p><ul><li><strong>明确输入：</strong>需要哪些前置条件</li><li><strong>标准输出：</strong>生成什么文档或产物</li><li><strong>执行步骤：</strong>AI 应该如何完成任务</li><li><strong>质量检查：</strong>如何验证结果是否正确</li></ul><h2>Action 分类</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><h3>🎯 P0 级动作（需求阶段）</h3><p>最重要的基础动作，必须在其他动作之前执行</p><ul><li><code>/hafw-req-analysis</code> - 需求分析</li><li><code>/hafw-req-spec</code> - 需求规范</li><li><code>/hafw-req-breakdown</code> - 需求拆解</li></ul></div><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><h3>🏗️ P1 级动作（设计阶段）</h3><p>基于需求进行系统设计</p><ul><li><code>/hafw-design-arch</code> - 架构设计</li><li><code>/hafw-design-db</code> - 数据库设计</li><li><code>/hafw-design-api</code> - API 设计</li></ul></div><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><h3>💻 P2 级动作（开发阶段）</h3><p>根据设计生成代码</p><ul><li><code>/hafw-dev-code</code> - 代码生成</li><li><code>/hafw-dev-test</code> - 测试生成</li><li><code>/hafw-dev-review</code> - 代码审查</li></ul></div>',
+            requirements: '<h1>需求分析</h1><h2>为什么需要需求分析？</h2><p>根据软件工程原理，70% 的项目失败源于需求不明确。需求分析阶段的目标是将模糊的用户需求转化为清晰、可执行的产品需求文档（PRD）。</p><h2>软件工程的需求工程</h2><p> 强调“AI 优先的需求工程”，即：</p><ul><li><strong>AI 辅助理解：</strong>让 AI 帮助分析需求的完整性</li><li><strong>AI 发现矛盾：</strong>识别需求之间的冲突</li><li><strong>AI 提取实体：</strong>自动识别业务实体和流程</li><li><strong>AI 生成用例：</strong>基于需求生成用户故事</li></ul><h2>需求分析流程</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><pre style="margin:0;background:#f1f5f9;padding:20px;color:#334155;">需求输入 → 需求分析 → 影响分析 → 需求规范 → 需求评审 → 需求拆解<br>    ↓           ↓           ↓           ↓           ↓           ↓<br>原始想法   业务实体   影响范围    PRD 文档   评审通过   任务列表</pre></div><h2>命令说明</h2><table><tr><th>命令</th><th>作用</th><th>输入</th><th>输出</th></tr><tr><td><code>/hafw-req-analysis</code></td><td>分析用户需求</td><td>需求描述</td><td>需求分析文档</td></tr><tr><td><code>/hafw-req-spec</code></td><td>生成需求规范</td><td>需求分析</td><td>PRD 文档</td></tr><tr><td><code>/hafw-req-review</code></td><td>需求评审</td><td>PRD 文档</td><td>评审报告</td></tr><tr><td><code>/hafw-req-breakdown</code></td><td>拆解需求</td><td>评审通过的 PRD</td><td>任务清单</td></tr></table><h2>为什么需要需求评审？</h2><p>需求评审是质量保证的第一道关卡。未经评审的需求可能包含：</p><ul><li>模糊不清的描述</li><li>遗漏的关键功能</li><li>技术实现上的矛盾</li><li>不合理的期望</li></ul><p>评审通过后才能进入设计阶段，避免“垃圾进，垃圾出”。</p>',
+            design: '<h1>系统设计</h1><h2>为什么需要系统设计？</h2><p>系统设计是连接需求和代码的桥梁。好的设计能够：</p><ul><li>降低系统复杂度</li><li>提高可维护性</li><li>减少返工成本</li><li>明确技术选型</li></ul><h2>软件工程设计原则</h2><p> 强调“架构优先于实现”，即：</p><ul><li><strong>先设计后编码：</strong>避免边写边改</li><li><strong>文档即代码：</strong>设计文档和代码同等重要</li><li><strong>AI 辅助设计：</strong>利用 AI 发现设计缺陷</li><li><strong>多维度设计：</strong>架构、数据库、API 并行进行</li></ul><h2>系统设计流程</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><pre style="margin:0;background:#f1f5f9;padding:20px;color:#334155;">架构设计 → 数据库设计 → API 设计<br>    ↓            ↓            ↓<br>系统架构    数据模型    接口规范<br>    ↓            ↓            ↓<br>技术选型    表结构      RESTful API<br>模块划分    索引优化    请求响应</pre></div><h2>命令说明</h2><table><tr><th>命令</th><th>作用</th><th>输入</th><th>输出</th></tr><tr><td><code>/hafw-design-arch</code></td><td>架构设计</td><td>PRD 文档</td><td>架构设计文档</td></tr><tr><td><code>/hafw-design-db</code></td><td>数据库设计</td><td>架构设计</td><td>数据库设计文档</td></tr><tr><td><code>/hafw-design-api</code></td><td>API 设计</td><td>架构设计</td><td>API 接口文档</td></tr></table><h2>为什么数据库设计和 API 设计可以并行？</h2><p>因为它们都依赖架构设计，但彼此独立：</p><ul><li>数据库设计关注数据存储和访问</li><li>API 设计关注接口和交互</li><li>两者通过数据模型关联</li></ul>',
+            development: '<h1>代码开发</h1><h2>为什么需要 AI 生成代码？</h2><p>传统开发模式中，开发者需要：</p><ul><li>理解需求（耗时 20%）</li><li>设计实现方案（耗时 30%）</li><li>编写代码（耗时 40%）</li><li>调试修复（耗时 10%）</li></ul><p>AI 生成代码可以将编写时间缩短到 10%，让人类专注于设计和审查。</p><h2>AI 辅助开发模式</h2><ul><li><strong>AI 生成，人类审查：</strong>AI 负责重复劳动，人类负责质量把关</li><li><strong>测试先行：</strong>生成代码后立即生成测试</li><li><strong>持续审查：</strong>代码审查是必要环节</li><li><strong>文档同步：</strong>代码和文档保持一致</li></ul><h2>代码开发流程</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><pre style="margin:0;background:#f1f5f9;padding:20px;color:#334155;">代码生成 → 测试生成 → 代码审查 → 修复优化<br>    ↓           ↓           ↓           ↓<br>源代码     单元测试    审查报告    最终代码<br>    ↓           ↓           ↓           ↓<br>功能实现   覆盖率     质量评估    通过验收</pre></div><h2>命令说明</h2><table><tr><th>命令</th><th>作用</th><th>输入</th><th>输出</th></tr><tr><td><code>/hafw-dev-code</code></td><td>生成代码</td><td>设计文档</td><td>源代码</td></tr><tr><td><code>/hafw-dev-test</code></td><td>生成测试</td><td>源代码</td><td>测试代码</td></tr><tr><td><code>/hafw-dev-review</code></td><td>代码审查</td><td>源代码 + 测试</td><td>审查报告</td></tr></table><h2>为什么需要代码审查？</h2><p>AI 生成的代码可能存在：</p><ul><li>逻辑错误</li><li>性能问题</li><li>安全漏洞</li><li>不符合项目规范</li></ul><p>代码审查是质量保证的关键环节，审查不通过需要重新生成。</p>',
+            quality: '<h1>质量保障</h1><h2>为什么需要质量保障？</h2><p>软件质量直接影响：</p><ul><li>用户体验</li><li>维护成本</li><li>系统稳定性</li><li>开发效率</li></ul><p>传统测试需要人工编写用例、执行测试，耗时耗力。AI 可以自动化完成这些工作。</p><h2>软件质量保障体系</h2><ul><li><strong>质量是设计出来的：</strong>好代码是设计出来的，不是测试出来的</li><li><strong>多层次保障：</strong>代码扫描 + 自动化测试 + 质量报告</li><li><strong>持续改进：</strong>质量问题驱动代码优化</li><li><strong>数据驱动：</strong>用数据说话，量化质量</li></ul><h2>质量保障流程</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><pre style="margin:0;background:#f1f5f9;padding:20px;color:#334155;">代码扫描 → 自动化测试 → 质量报告 → 质量评审<br>    ↓            ↓            ↓           ↓<br>静态分析    单元测试    质量评分    通过/返工<br>代码异味    集成测试    问题清单    持续改进</pre></div><h2>命令说明</h2><table><tr><th>命令</th><th>作用</th><th>输入</th><th>输出</th></tr><tr><td><code>/hafw-qa-scan</code></td><td>代码扫描</td><td>源代码</td><td>扫描报告</td></tr><tr><td><code>/hafw-qa-test</code></td><td>自动化测试</td><td>测试代码</td><td>测试结果</td></tr><tr><td><code>/hafw-qa-report</code></td><td>质量报告</td><td>扫描 + 测试</td><td>质量评分</td></tr></table><h2>质量不达标怎么办？</h2><p>如果质量评审不通过，需要返回代码开发阶段：</p><ul><li>修复扫描发现的问题</li><li>修复测试失败的用例</li><li>优化代码质量</li><li>重新执行 QA 流程</li></ul>',
+            deployment: '<h1>部署运维</h1><h2>为什么需要自动化部署？</h2><p>传统部署运维面临的问题：</p><ul><li>手动部署容易出错</li><li>环境配置复杂</li><li>回滚困难</li><li>监控滞后</li></ul><p>自动化部署可以解决这些问题，实现快速、可靠的发布。</p><h2>现代运维理念</h2><ul><li><strong>部署即代码：</strong>部署配置版本化管理</li><li><strong>持续交付：</strong>自动化构建、测试、发布</li><li><strong>监控先行：</strong>上线前配置好监控告警</li><li><strong>快速回滚：</strong>出现问题能够立即回滚</li></ul><h2>部署运维流程</h2><div style="background:#f1f5f9;padding:20px;border-radius:var(--radius);margin:20px 0;"><pre style="margin:0;background:#f1f5f9;padding:20px;color:#334155;">构建打包 → 发布部署 → 监控运维<br>    ↓           ↓           ↓<br>编译构建    环境配置    实时监控<br>依赖安装    服务启动    告警通知<br>镜像制作    负载均衡    日志分析</pre></div><h2>命令说明</h2><table><tr><th>命令</th><th>作用</th><th>输入</th><th>输出</th></tr><tr><td><code>/hafw-deploy-build</code></td><td>构建打包</td><td>源代码</td><td>构建产物</td></tr><tr><td><code>/hafw-deploy-release</code></td><td>发布部署</td><td>构建产物</td><td>运行环境</td></tr><tr><td><code>/hafw-deploy-monitor</code></td><td>监控运维</td><td>运行环境</td><td>监控配置</td></tr></table><h2>为什么监控要在部署时配置？</h2><p>很多团队上线后才配置监控，导致：</p><ul><li>问题发现滞后</li><li>故障定位困难</li><li>用户已经受影响</li></ul><p>监控配置应该和部署同步进行，确保上线即可监控。</p>',
+            commands: '<h1>命令参考</h1><p>完整的 HAFW CLI 命令列表，共 27 个智能指令。</p><h2>上下文管理 (8 个)</h2><ul><li><code>/hafw-context-init</code> - 初始化</li><li><code>/hafw-context-show</code> - 查看上下文</li><li><code>/hafw-context-scan</code> - 扫描更新</li><li><code>/hafw-context-update</code> - 更新</li><li><code>/hafw-context-switch</code> - 切换</li><li><code>/hafw-context-import</code> - 导入</li><li><code>/hafw-context-export</code> - 导出</li><li><code>/hafw-context-timeline</code> - 时间线</li></ul><h2>需求分析 (5 个)</h2><ul><li><code>/hafw-req-analysis</code> - 分析需求</li><li><code>/hafw-req-spec</code> - 生成规范</li><li><code>/hafw-req-review</code> - 需求评审</li><li><code>/hafw-req-impact</code> - 影响分析</li><li><code>/hafw-req-breakdown</code> - 拆解任务</li></ul><h2>系统设计 (3 个)</h2><ul><li><code>/hafw-design-arch</code> - 架构设计</li><li><code>/hafw-design-db</code> - 数据库设计</li><li><code>/hafw-design-api</code> - API 设计</li></ul><h2>代码开发 (3 个)</h2><ul><li><code>/hafw-dev-code</code> - 生成代码</li><li><code>/hafw-dev-test</code> - 生成测试</li><li><code>/hafw-dev-review</code> - 代码审查</li></ul><h2>质量保障 (3 个)</h2><ul><li><code>/hafw-qa-scan</code> - 代码扫描</li><li><code>/hafw-qa-test</code> - 自动化测试</li><li><code>/hafw-qa-report</code> - 质量报告</li></ul><h2>部署运维 (3 个)</h2><ul><li><code>/hafw-deploy-build</code> - 构建打包</li><li><code>/hafw-deploy-release</code> - 发布部署</li><li><code>/hafw-deploy-monitor</code> - 监控运维</li></ul><h2>任务管理 (2 个)</h2><ul><li><code>/hafw-task-list</code> - 查看任务</li><li><code>/hafw-task-update</code> - 更新任务</li></ul>',
+            'context-files': '<h1>上下文文件</h1><p>HAFW 使用多种上下文文件来管理项目信息。</p>',
+            specs: '<h1>规范文档</h1><p>HAFW 遵循的标准和规范文档。</p>'
+        };
+
+        function loadDoc(docId) {
+            const content = docsContent[docId] || '<h1>文档不存在</h1><p>抱歉，该文档暂时不存在。</p>';
+            document.getElementById('docsContent').innerHTML = content;
+            document.querySelectorAll('.docs-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (event && event.target) event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
