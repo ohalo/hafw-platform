@@ -22,6 +22,91 @@ ls -la .hafw/*/project.json 2>/dev/null
 
 ---
 
+## AI IDE 环境检测
+
+不同的 AI IDE 环境有不同的安装方式，请先识别当前环境：
+
+### 1. Cursor IDE
+**特征检测**:
+- 存在 `.cursor/` 目录
+- 环境变量 `CURSOR_VERSION` 或 `CURSOR_CWD`
+
+**安装方式**: 使用全局 npm 安装（见下方步骤 1）
+
+### 2. Windsurf IDE
+**特征检测**:
+- 存在 `.windsurf/` 目录
+- 环境变量 `WINDSURF_VERSION`
+
+**安装方式**: 使用全局 npm 安装（见下方步骤 1）
+
+### 3. Trae IDE
+**特征检测**:
+- 存在 `.trae/` 目录
+- 环境变量 `TRAE_VERSION`
+
+**安装方式**: 使用全局 npm 安装（见下方步骤 1）
+
+### 4. GitHub Copilot / VS Code
+**特征检测**:
+- 存在 `.vscode/` 目录
+- 环境变量 `VSCODE_CWD` 或 `VSCODE_PID`
+
+**安装方式**: 使用全局 npm 安装（见下方步骤 1）
+
+### 5. Claude Code (Anthropic)
+**特征检测**:
+- 环境变量 `CLAUDE_CODE_VERSION` 或 `ANTHROPIC_API_KEY`
+- 命令行提示符显示 `claude>` 或 `claude-code>`
+- 存在 `.claude/` 目录（部分版本）
+
+**安装方式**: 使用全局 npm 安装（见下方步骤 1）
+
+**特殊说明**: Claude Code 运行在独立终端环境中，可能需要手动同步 PATH:
+```bash
+# 在 Claude Code 中执行
+!echo $PATH
+# 确保包含 npm 全局 bin 目录
+```
+
+### 6. 通用 AI 助手 / 命令行环境
+**特征检测**:
+- 无特定 IDE 标识
+- 纯终端/命令行环境
+
+**安装方式**: 使用全局 npm 安装（见下方步骤 1）
+
+### 环境检测脚本
+```bash
+#!/bin/bash
+# 检测当前 AI IDE 环境
+
+echo "=== AI IDE 环境检测 ==="
+
+if [ -d ".cursor" ] || [ -n "$CURSOR_VERSION" ]; then
+    echo "✅ 检测到: Cursor IDE"
+    echo "安装方式: 全局 npm 安装"
+elif [ -d ".windsurf" ] || [ -n "$WINDSURF_VERSION" ]; then
+    echo "✅ 检测到: Windsurf IDE"
+    echo "安装方式: 全局 npm 安装"
+elif [ -d ".trae" ] || [ -n "$TRAE_VERSION" ]; then
+    echo "✅ 检测到: Trae IDE"
+    echo "安装方式: 全局 npm 安装"
+elif [ -d ".vscode" ] || [ -n "$VSCODE_CWD" ]; then
+    echo "✅ 检测到: VS Code / GitHub Copilot"
+    echo "安装方式: 全局 npm 安装"
+elif [ -n "$CLAUDE_CODE_VERSION" ] || [ -n "$ANTHROPIC_API_KEY" ] || [ -d ".claude" ]; then
+    echo "✅ 检测到: Claude Code (Anthropic)"
+    echo "安装方式: 全局 npm 安装"
+    echo "注意: 可能需要手动同步 PATH 到 Claude Code 环境"
+else
+    echo "ℹ️ 检测到: 通用 AI 助手 / 命令行环境"
+    echo "安装方式: 全局 npm 安装"
+fi
+```
+
+---
+
 ## 自动安装流程
 
 ### 步骤 1: 安装 HAFW CLI
@@ -150,6 +235,17 @@ echo "  hafw req-analysis '你的需求描述'"
 
 ## AI 智能体执行指令
 
+### 检测 AI IDE 环境
+```
+/检测当前 AI IDE 环境
+```
+
+**AI 应执行**:
+1. 检查是否存在 `.cursor/`、`.windsurf/`、`.trae/`、`.vscode/`、`.claude/` 目录
+2. 检查环境变量 `CURSOR_VERSION`、`WINDSURF_VERSION`、`TRAE_VERSION`、`VSCODE_CWD`、`CLAUDE_CODE_VERSION`、`ANTHROPIC_API_KEY`
+3. 报告检测到的 IDE 类型及对应的安装方式
+4. 根据 IDE 类型提供针对性的安装建议
+
 ### 检测安装状态
 ```
 /检查 HAFW 安装状态
@@ -158,7 +254,8 @@ echo "  hafw req-analysis '你的需求描述'"
 **AI 应执行**:
 1. 运行 `which hafw` 检测 CLI
 2. 运行 `ls -la .hafw/ 2>/dev/null` 检测项目
-3. 报告状态并建议下一步
+3. 检测当前 AI IDE 环境类型
+4. 报告状态并建议下一步
 
 ### 自动安装
 ```
@@ -166,9 +263,11 @@ echo "  hafw req-analysis '你的需求描述'"
 ```
 
 **AI 应执行**:
-1. 按上述流程自动安装 CLI
-2. 自动初始化项目
-3. 验证并报告结果
+1. 先检测当前 AI IDE 环境
+2. 根据 IDE 类型选择对应的安装方式
+3. 按上述流程自动安装 CLI
+4. 自动初始化项目
+5. 验证并报告结果
 
 ### 快速开始
 ```
@@ -176,9 +275,10 @@ echo "  hafw req-analysis '你的需求描述'"
 ```
 
 **AI 应执行**:
-1. 如未安装 CLI，先安装
-2. 执行 `hafw init [项目名称]`
-3. 显示项目上下文
+1. 检测当前 AI IDE 环境
+2. 如未安装 CLI，先安装（使用 IDE 对应的方式）
+3. 执行 `hafw init [项目名称]`
+4. 显示项目上下文
 
 ---
 
@@ -232,6 +332,110 @@ hafw init {项目名称} --force
 ### Q3: 检测不到项目类型
 **现象**: 初始化后显示 "Unknown" 类型
 **解决**: 手动更新 `.hafw/{项目}/project.json` 中的 type 和 language 字段
+
+### Q4: Cursor IDE 中无法识别 hafw 命令
+**现象**: 在 Cursor 终端中提示 `hafw: command not found`
+**解决**:
+```bash
+# 1. 检查 npm 全局安装路径
+echo $(npm config get prefix)/bin
+
+# 2. 将路径添加到 Cursor 环境
+# 在 Cursor 设置中添加环境变量 PATH
+# 或手动执行
+export PATH="$(npm config get prefix)/bin:$PATH"
+
+# 3. 重新加载终端后验证
+hafw --version
+```
+
+### Q5: Windsurf IDE 中权限问题
+**现象**: Windsurf 内置终端中 npm 全局安装失败
+**解决**:
+```bash
+# 使用本地安装方式
+npm install hafw-cli --save-dev
+
+# 然后在 package.json 中添加脚本
+{
+  "scripts": {
+    "hafw": "hafw"
+  }
+}
+
+# 使用方式
+npm run hafw -- init 项目名
+```
+
+### Q6: Trae IDE 环境变量不生效
+**现象**: 安装成功后仍无法找到 hafw 命令
+**解决**:
+```bash
+# 1. 检查 shell 配置文件
+cat ~/.zshrc | grep npm
+cat ~/.bashrc | grep npm
+
+# 2. 手动添加环境变量到 ~/.zshrc 或 ~/.bashrc
+export PATH="$(npm config get prefix)/bin:$PATH"
+
+# 3. 重新加载配置
+source ~/.zshrc  # 或 source ~/.bashrc
+```
+
+### Q7: VS Code + Copilot 中终端路径问题
+**现象**: VS Code 集成终端与系统终端环境不一致
+**解决**:
+```bash
+# 在 VS Code 设置中配置终端环境
+# settings.json 中添加:
+{
+  "terminal.integrated.env.osx": {
+    "PATH": "$(npm config get prefix)/bin:${env:PATH}"
+  }
+}
+
+# 或使用绝对路径执行
+$(npm config get prefix)/bin/hafw --version
+```
+
+### Q8: Claude Code 中 PATH 环境变量不一致
+**现象**: 在系统终端可以运行 `hafw`，但在 Claude Code 中提示命令不存在
+**解决**:
+```bash
+# 1. 在 Claude Code 中检查当前 PATH
+!echo $PATH
+
+# 2. 在系统终端获取完整 PATH 并复制
+# 在系统终端执行:
+echo $PATH
+
+# 3. 在 Claude Code 中设置 PATH（临时）
+!export PATH="/系统终端的PATH值"
+
+# 4. 或者使用绝对路径运行 hafw
+!$(npm config get prefix)/bin/hafw --version
+
+# 5. 永久解决方案：在 Claude Code 配置中添加 PATH
+# 编辑 ~/.claude/config.json 或启动时自动加载
+```
+
+### Q9: Claude Code 中 npm 全局安装后无法立即使用
+**现象**: Claude Code 中执行 `npm install -g hafw-cli` 成功，但 `hafw` 命令不可用
+**解决**:
+```bash
+# 方法 1: 重新加载 shell
+!exec $SHELL -l
+
+# 方法 2: 手动 source 配置文件
+!source ~/.zshrc  # 或 ~/.bashrc
+
+# 方法 3: 使用 npx 直接运行（无需全局安装）
+!npx hafw-cli --version
+
+# 方法 4: 本地安装到项目
+!npm install hafw-cli --save-dev
+!./node_modules/.bin/hafw --version
+```
 
 ---
 
